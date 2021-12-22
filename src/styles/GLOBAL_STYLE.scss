@@ -1,0 +1,26 @@
+input {
+    border: none;
+    outline: none;
+    &:focus {
+        outline: none;
+    }
+}
+
+body {
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+    font-family: Roboto, San Francisco, 'Helvetica Neue', Helvetica, Arial, PingFangSC-Light, 'Hiragina Sans GB', 'WenQuanYi Micro Hei', 'microsoft yahei ui',
+    'microsoft yahei', sans-serif;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.text-to-center{
+    text-align: center;
+}
+li{
+    list-style-type: none;
+}

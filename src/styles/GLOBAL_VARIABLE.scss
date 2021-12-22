@@ -1,0 +1,61 @@
+$color-main: #409EFF;
+$color-success: #67C23A;
+$color-warning: #E6A23C;
+$color-danger: #F56C6C;
+$color-info: #909399;
+
+$text-primary: #303133;
+$text-regular: #606266;
+$text-secondary: #909399;
+$text-placeholder: #C0C4CC;
+
+$border-base: #DCDFE6;
+
+$basic-black: #000000;
+$basic-white: #ffffff;
+
+// 低于该尺寸直接缩放
+$size-lg-max: 1200px;
+// 正常各自分配
+$size-xl-max: 1920px;
+
+// 页面缩放方案
+@mixin scale-method {
+    @media (max-width: $size-lg-max) {
+        min-width: $size-lg-max;
+    }
+    @media (min-width: $size-lg-max) {
+        width: 100%;
+    }
+}
+
+// 输入框样式
+@mixin input-style {
+    color: $text-placeholder;
+    border: 1px solid rgba(255, 0, 0, 0);
+    transition: border .5s;
+    &:focus {
+        outline: none;
+        border: 1px solid $color-main;
+    }
+}
+
+@font-face {
+    font-family: 'iconfont';  /* Project id 2830942 */
+    src: url('//at.alicdn.com/t/font_2830942_szs7whzeub8.woff2?t=1632476044901') format('woff2'),
+    url('//at.alicdn.com/t/font_2830942_szs7whzeub8.woff?t=1632476044901') format('woff'),
+    url('//at.alicdn.com/t/font_2830942_szs7whzeub8.ttf?t=1632476044901') format('truetype');
+}
+
+.iconfont {
+    font-family: iconfont, sans-serif;
+}
+
+// 控制台内容框的基本样式
+@mixin admin-content {
+    margin: 80px 50px 0 180px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 20px;
+    background-color: white;
+}
