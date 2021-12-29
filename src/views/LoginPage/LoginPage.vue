@@ -37,6 +37,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { login } from '@/api'
+import { ElLoading, ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -44,18 +46,57 @@ export default defineComponent({
     const router = useRouter()
 
     const username = ref<string>('')
+    const usernameErrorTip = ref<string>('')
+
     const password = ref<string>('')
+    const passwordErrorTip = ref<string>('')
+
+    /**
+     * 检查表单是否正确
+     * @return {boolean} 返回true表示表单可用
+     */
+    function preCheck ():boolean {
+      let isValidForm = true
+      if (!username.value) {
+        usernameErrorTip.value = '用户名不能为空'
+        isValidForm = false
+      }
+      if (!password.value) {
+        passwordErrorTip.value = '密码不能为空'
+        isValidForm = false
+      }
+      return isValidForm
+    }
 
     const tryLogin = () => {
+      if (preCheck()) {
+        const loading = ElLoading.service()
+        login(username.value, password.value).then(resp => {
+          if (resp.code === 0) {
+            // 登录成功
+            router.replace('/admin')
+          } else {
+            ElMessage({
+              message: '登录失败,' + resp.message,
+              type: 'error'
+            })
+          }
+        }).finally(() => {
+          loading.close()
+        })
+
+      }
       // TODO 登录逻辑
 
-      router.replace('/info')
+
     }
 
     return {
       username,
       password,
-      tryLogin
+      tryLogin,
+      usernameErrorTip,
+      passwordErrorTip
     }
   }
 })

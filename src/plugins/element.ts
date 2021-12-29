@@ -5,7 +5,9 @@ import {
   ElHeader,
   ElMain,
   ElMenu,
-  ElMenuItem
+  ElMenuItem,
+  ElLoading,
+  ElMessage
 } from 'element-plus'
 import { App } from 'vue'
 
@@ -17,4 +19,6 @@ export default (app: App):void => {
   app.use(ElMain)
   app.use(ElMenu)
   app.use(ElMenuItem)
+  app.use(ElLoading)
+  app.use(ElMessage)
 }
