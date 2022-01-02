@@ -59,3 +59,15 @@ export const publishWgtNewVersion = (versionName:string, versionCode: number | s
  * @param versionCode {number} 版本号
  */
 export const publishAndroidNewVersion = (versionName: string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/app/android/update', { versionName, versionCode }, 'POST')
+
+/**
+ * 删除wgt安装包
+ * @param fileName {string} 文件名称
+ */
+export const deleteWgtResource = (fileName: string):Promise<ResBean> => noRepeatAjax('/version/delete/wgt', { fileName }, 'POST')
+
+/**
+ * 删除安卓安装包
+ * @param fileName {string} 文件名称
+ */
+export const deleteAndroidApk = (fileName: string):Promise<ResBean> => noRepeatAjax('/version/delete/android', { fileName }, 'POST')

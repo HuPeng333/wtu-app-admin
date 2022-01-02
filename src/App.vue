@@ -27,6 +27,7 @@ export default {
   url('//at.alicdn.com/t/font_3050092_n6qzqqhydip.ttf?t=1641125838153') format('truetype');
 }
 .header-el{
+  z-index: 2;
   padding: 0!important;
 }
 .header{

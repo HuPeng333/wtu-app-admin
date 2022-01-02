@@ -7,9 +7,9 @@
     <div>
       <el-skeleton :rows="10" animated :throttle="500" :loading="loadingDoneCount >= 0 && loadingDoneCount < 4"/>
       <div v-if="loadingDoneCount === 4">
-        <file-table :file-list="wgtResourceList" prefix-url="/app/hotUpdate/" title="热更新资源包"
+        <file-table :file-list="wgtResourceList" prefix-url="/app/hotUpdate/" title="热更新资源包" :delete-callback="deleteWgtResource"
                     :new-version-info="wgtNewVersionInfo" :update-call-back="publishWgtNewVersion"/>
-        <file-table :file-list="androidApkList" prefix-url="/app/full/android/" title="安卓安装包"
+        <file-table :file-list="androidApkList" prefix-url="/app/full/android/" title="安卓安装包" :delete-callback="deleteAndroidApk"
                     :new-version-info="androidNewVersionInfo" :update-call-back="publishAndroidNewVersion"/>
       </div>
     </div>
@@ -24,7 +24,7 @@ import {
   getWgtNewVersionInfo,
   getWgtList,
   getAndroidNewVersionInfo,
-  publishAndroidNewVersion, publishWgtNewVersion
+  publishAndroidNewVersion, publishWgtNewVersion, deleteAndroidApk, deleteWgtResource
 } from '@/api'
 import { AppInfo } from '@/api/beans/AppInfo'
 import { FileInfo } from '@/api/beans/FileInfo'
@@ -72,8 +72,6 @@ export default defineComponent({
     }).finally(() => {
       loadingDoneCount.value++
     })
-
-
     return {
       loadingDoneCount,
       androidNewVersionInfo,
@@ -81,7 +79,9 @@ export default defineComponent({
       wgtResourceList,
       wgtNewVersionInfo,
       publishWgtNewVersion,
-      publishAndroidNewVersion
+      publishAndroidNewVersion,
+      deleteAndroidApk,
+      deleteWgtResource
     }
   }
 })

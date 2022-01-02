@@ -21,15 +21,18 @@
         </div>
       </div>
     </div>
-    <el-table :data="fileList" :row-class-name="showCurrentVersionInTable" :default-sort="{prop: 'fileName', order: 'descending'}" ref="infoTable">
+    <el-table :data="copyOfFileList" :row-class-name="showCurrentVersionInTable" :default-sort="{prop: 'fileName', order: 'descending'}" ref="infoTable">
       <el-table-column type="index" label="序号"/>
       <el-table-column prop="fileName" label="版本名称" sortable/>
       <el-table-column prop="createTime" label="发布时间" :formatter="timeStampFormatter"/>
       <el-table-column label="操作" width="120">
         <template #default="scope">
-          <form :action="getServerUrl() + prefixUrl + scope.row.fileName" :id="`file-${scope.row.fileName}`">
-            <el-button type="text" size="small" native-type="submit">下载</el-button>
-          </form>
+          <div style="display: flex;">
+            <form :action="getServerUrl() + prefixUrl + scope.row.fileName" :id="`file-${scope.row.fileName}`">
+              <el-button type="text" size="small" native-type="submit">下载</el-button>
+            </form>
+            <el-button type="text" size="small" @click="deleteFile(scope)" style="margin-left: 4px">删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -39,16 +42,16 @@
       <span>选择新版本文件</span>
     </div>
     <el-select v-model="selectedVersion" placeholder="选择一个文件">
-      <el-option v-for="(item, index) in fileList" :key="index" :label="item.fileName" :value="item.fileName"/>
+      <el-option v-for="(item, index) in copyOfFileList" :key="index" :label="item.fileName" :value="item.fileName"/>
     </el-select>
     <div style="margin: 20px 0">
-      <div v-if="!!copyOfVersionInfo && !!selectedVersion">
-        <span>新版本号: {{copyOfVersionInfo?.versionCode + 1}}</span>
-        <span style="margin-left: 15px">新版本名称: {{selectedVersion}}</span>
-      </div>
-      <div v-else-if="!!selectedVersion">
+<!--      <div v-if="!!copyOfVersionInfo && !!selectedVersion">-->
+<!--        <span>新版本号: {{copyOfVersionInfo?.versionCode + 1}}</span>-->
+<!--        <span style="margin-left: 15px">新版本名称: {{selectedVersion}}</span>-->
+<!--      </div>-->
+      <div v-if="!!selectedVersion">
         <div>
-          <span>输入版本号(默认为1)</span>
+          <span>输入版本号</span>
         </div>
         <el-input placeholder="输入版本号" v-model="formVersionCode" type="number"/>
       </div>
@@ -65,9 +68,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { FileInfo } from '@/api/beans/FileInfo'
-import { getServerUrl, parseTimestamp, showSuccessToast } from '@/hook/utils'
+import { getServerUrl, parseTimestamp, showErrorToast, showSuccessToast } from '@/hook/utils'
 import { ResBean } from '@/api/beans/ResBean'
 import { ElLoading } from 'element-plus'
+import { AppInfo } from '@/api/beans/AppInfo'
 
 export default defineComponent({
   name: 'FileTable',
@@ -81,15 +85,23 @@ export default defineComponent({
       required: true
     },
     title: String,
-    newVersionInfo: Object,
+    newVersionInfo: {
+      type: Object,
+      required: true
+    },
     updateCallBack: {
+      type: Function,
+      required: true
+    },
+    deleteCallback: {
       type: Function,
       required: true
     }
   },
   setup (props) {
     // 复制一份, 方便在发送ajax请求后修改显示的数据
-    const copyOfVersionInfo = ref(props.newVersionInfo)
+    const copyOfVersionInfo = ref<AppInfo>(props.newVersionInfo as AppInfo)
+    const copyOfFileList = ref<Array<FileInfo>>(props.fileList as Array<FileInfo>)
     // ref组件
     const infoTable = ref()
 
@@ -100,12 +112,16 @@ export default defineComponent({
     const showModifyVersionDialog = ref(false)
     const selectedVersion = ref<string>()
     // 如果有IOS, 应该将IOS拼接上
-    const formVersionCode = ref<number>(props.newVersionInfo ? props.newVersionInfo.versionCode : 1)
+    const formVersionCode = ref<number>(props.newVersionInfo ? props.newVersionInfo.versionCode + 1 : 1)
 
     /**
      * 添加新版本
      */
     const publishNewVersionAjax = () => {
+      if (!selectedVersion.value) {
+        showErrorToast('请选择版本')
+        return
+      }
       const loading = ElLoading.service()
 
       // 请求后的cb
@@ -113,7 +129,8 @@ export default defineComponent({
         if (resp.code === 0) {
           showSuccessToast('操作成功')
           copyOfVersionInfo.value = {
-            versionName: selectedVersion.value,
+            // 上面已经对空值做了处理
+            versionName: selectedVersion.value!,
             versionCode: formVersionCode.value
           }
           infoTable.value.doLayout()
@@ -141,6 +158,32 @@ export default defineComponent({
       }
     }
 
+    const deleteFile = ({ row }: {row: FileInfo}) => {
+      console.log(row.fileName + '----' + copyOfVersionInfo.value.versionName)
+      if (row.fileName === copyOfVersionInfo.value.versionName) {
+        showErrorToast('不可以删除当前的最新版本! 请更新新版本信息后再删除')
+        return
+      }
+      const loading = ElLoading.service()
+      let targetIndex = 0
+      const targetArray = copyOfFileList.value
+      for (let i = 0, len = targetArray.length; i < len; i++) {
+        if (targetArray[i].fileName == row.fileName) {
+          targetIndex = i
+        }
+      }
+      props.deleteCallback(row.fileName).then((resp: ResBean) => {
+        if (resp.code === 0) {
+          showSuccessToast('删除成功')
+          copyOfFileList.value.splice(targetIndex, 1)
+        } else {
+          showErrorToast(`删除失败, ${resp.message}`)
+        }
+      }).finally(() => {
+        loading.close()
+      })
+    }
+
     return {
       timeStampFormatter,
       getServerUrl,
@@ -150,7 +193,9 @@ export default defineComponent({
       publishNewVersionAjax,
       showCurrentVersionInTable,
       copyOfVersionInfo,
-      infoTable
+      infoTable,
+      deleteFile,
+      copyOfFileList
     }
   }
 })
