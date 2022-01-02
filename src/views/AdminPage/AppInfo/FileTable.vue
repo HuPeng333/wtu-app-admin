@@ -11,6 +11,9 @@
         <div>
           <span>最新版本号: {{copyOfVersionInfo?.versionCode}}</span>
         </div>
+        <div>
+          <el-link type="primary" @click.prevent="showModifyVersionDialog = true">点我更新</el-link>
+        </div>
       </div>
       <div v-else>
         <div>

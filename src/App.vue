@@ -22,9 +22,9 @@ export default {
 <style lang="scss">
 @font-face {
   font-family: 'iconfont';  /* Project id 3050092 */
-  src: url('//at.alicdn.com/t/font_3050092_roye4uz1h1s.woff2?t=1640173941765') format('woff2'),
-  url('//at.alicdn.com/t/font_3050092_roye4uz1h1s.woff?t=1640173941765') format('woff'),
-  url('//at.alicdn.com/t/font_3050092_roye4uz1h1s.ttf?t=1640173941765') format('truetype');
+  src: url('//at.alicdn.com/t/font_3050092_n6qzqqhydip.woff2?t=1641125838153') format('woff2'),
+  url('//at.alicdn.com/t/font_3050092_n6qzqqhydip.woff?t=1641125838153') format('woff'),
+  url('//at.alicdn.com/t/font_3050092_n6qzqqhydip.ttf?t=1641125838153') format('truetype');
 }
 .header-el{
   padding: 0!important;
