@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios-simple-wrapper": "^0.1.1",
+    "axios-simple-wrapper": "^0.1.2",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.28",
     "style-resources-loader": "^1.5.0",

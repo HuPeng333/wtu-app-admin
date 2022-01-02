@@ -23,6 +23,7 @@ module.exports = {
     "keyword-spacing": 2,
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "error",
-    "object-curly-spacing": ["error", "always"]
+    "object-curly-spacing": ["error", "always"],
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }

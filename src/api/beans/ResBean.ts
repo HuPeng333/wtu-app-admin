@@ -1,5 +1,5 @@
-export interface ResBean {
+export interface ResBean<T = unknown> {
   code: number
   message: string
-  data: unknown
+  data: T
 }

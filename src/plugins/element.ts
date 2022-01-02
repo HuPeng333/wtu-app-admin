@@ -7,7 +7,7 @@ import {
   ElMenu,
   ElMenuItem,
   ElLoading,
-  ElMessage
+  ElMessage, ElUpload, ElDivider, ElSkeleton, ElTable, ElTableColumn, ElLink, ElDialog, ElSelect, ElOption, ElInput
 } from 'element-plus'
 import { App } from 'vue'
 
@@ -21,4 +21,14 @@ export default (app: App):void => {
   app.use(ElMenuItem)
   app.use(ElLoading)
   app.use(ElMessage)
+  app.use(ElUpload)
+  app.use(ElDivider)
+  app.use(ElSkeleton)
+  app.use(ElTable)
+  app.use(ElTableColumn)
+  app.use(ElLink)
+  app.use(ElDialog)
+  app.use(ElSelect)
+  app.use(ElOption)
+  app.use(ElInput)
 }

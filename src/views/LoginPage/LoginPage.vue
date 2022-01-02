@@ -74,7 +74,7 @@ export default defineComponent({
         login(username.value, password.value).then(resp => {
           if (resp.code === 0) {
             // 登录成功
-            router.replace('/admin')
+            router.replace('/admin/info')
           } else {
             ElMessage({
               message: '登录失败,' + resp.message,
