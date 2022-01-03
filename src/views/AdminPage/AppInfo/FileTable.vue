@@ -25,6 +25,7 @@
       <el-table-column type="index" label="序号"/>
       <el-table-column prop="fileName" label="版本名称" sortable/>
       <el-table-column prop="createTime" label="发布时间" :formatter="timeStampFormatter"/>
+      <el-table-column prop="size" label="大小" :formatter="sizeFormatter"/>
       <el-table-column label="操作" width="120">
         <template #default="scope">
           <div style="display: flex;">
@@ -118,6 +119,7 @@ export default defineComponent({
      * 添加新版本
      */
     const publishNewVersionAjax = () => {
+      console.log(formVersionCode)
       if (!selectedVersion.value) {
         showErrorToast('请选择版本')
         return
@@ -125,7 +127,7 @@ export default defineComponent({
       const loading = ElLoading.service()
 
       // 请求后的cb
-      const thenCallback = (resp: ResBean) => {
+      props.updateCallBack(selectedVersion.value, formVersionCode.value).then((resp: ResBean) => {
         if (resp.code === 0) {
           showSuccessToast('操作成功')
           copyOfVersionInfo.value = {
@@ -136,16 +138,10 @@ export default defineComponent({
           infoTable.value.doLayout()
 
         }
-      }
-      const finallyCallback = () => {
+      }).finally(() => {
         loading.close()
-      }
+      })
 
-      if (props.newVersionInfo && selectedVersion.value) {
-        props.updateCallBack(selectedVersion.value).then(thenCallback).finally(finallyCallback)
-      } else if (selectedVersion.value){
-        props.updateCallBack(selectedVersion.value, formVersionCode.value).then(thenCallback).finally(finallyCallback)
-      }
       showModifyVersionDialog.value = false
 
     }
@@ -184,6 +180,19 @@ export default defineComponent({
       })
     }
 
+    /**
+     * 文件大小格式化
+     * 小于1000kb: 500 -> 500KB
+     * 大于等于1000kb: 1000 -> 1MB
+     */
+    const sizeFormatter = ({ size }: FileInfo):string => {
+      if (size < 1000) {
+        return size + 'KB'
+      } else {
+        return (size / 1000).toFixed(2) + 'MB'
+      }
+    }
+
     return {
       timeStampFormatter,
       getServerUrl,
@@ -195,7 +204,8 @@ export default defineComponent({
       copyOfVersionInfo,
       infoTable,
       deleteFile,
-      copyOfFileList
+      copyOfFileList,
+      sizeFormatter
     }
   }
 })
