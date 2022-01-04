@@ -22,6 +22,11 @@ module.exports = {
         pathRewrite:{
           '^/api': ''
         }
+      },
+      '^/app': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+        ws: true
       }
     }
   }

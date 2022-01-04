@@ -29,7 +29,7 @@
       <el-table-column label="操作" width="120">
         <template #default="scope">
           <div style="display: flex;">
-            <form :action="getServerUrl() + prefixUrl + scope.row.fileName" :id="`file-${scope.row.fileName}`">
+            <form :action="prefixUrl + scope.row.fileName" :id="`file-${scope.row.fileName}`">
               <el-button type="text" size="small" native-type="submit">下载</el-button>
             </form>
             <el-button type="text" size="small" @click="deleteFile(scope)" style="margin-left: 4px">删除</el-button>
@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { FileInfo } from '@/api/beans/FileInfo'
-import { getServerUrl, parseTimestamp, showErrorToast, showSuccessToast } from '@/hook/utils'
+import { parseTimestamp, showErrorToast, showSuccessToast } from '@/hook/utils'
 import { ResBean } from '@/api/beans/ResBean'
 import { ElLoading } from 'element-plus'
 import { AppInfo } from '@/api/beans/AppInfo'
@@ -194,7 +194,6 @@ export default defineComponent({
 
     return {
       timeStampFormatter,
-      getServerUrl,
       showModifyVersionDialog,
       selectedVersion,
       formVersionCode,
