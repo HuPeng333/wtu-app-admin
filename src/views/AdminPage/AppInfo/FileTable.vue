@@ -87,8 +87,7 @@ export default defineComponent({
     },
     title: String,
     newVersionInfo: {
-      type: Object,
-      required: true
+      type: Object
     },
     updateCallBack: {
       type: Function,

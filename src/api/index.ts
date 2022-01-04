@@ -11,6 +11,9 @@ axios.interceptors.response.use((response) => {
       type: 'error',
       message: response.data.message
     })
+    if (response.data.code === 101) {
+      window.location.replace('/login')
+    }
   }
   return response.data
 }, error => {
@@ -51,14 +54,14 @@ export const getAndroidNewVersionInfo = ():Promise<ResBean<AppInfo>> => noRepeat
  * @param versionName {string} 版本名称
  * @param versionCode {number} 版本号
  */
-export const publishWgtNewVersion = (versionName:string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/app/wgt/update', { versionName, versionCode },'POST')
+export const publishWgtNewVersion = (versionName:string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/update/wgt/update', { versionName, versionCode },'POST')
 
 /**
  * 发布安卓新版本
  * @param versionName {string} 版本名称
  * @param versionCode {number} 版本号
  */
-export const publishAndroidNewVersion = (versionName: string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/app/android/update', { versionName, versionCode }, 'POST')
+export const publishAndroidNewVersion = (versionName: string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/update/android/update', { versionName, versionCode }, 'POST')
 
 /**
  * 删除wgt安装包

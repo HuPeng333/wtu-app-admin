@@ -38,7 +38,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/api'
-import { ElLoading, ElMessage } from 'element-plus'
+import { ElLoading } from 'element-plus'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -75,11 +75,6 @@ export default defineComponent({
           if (resp.code === 0) {
             // 登录成功
             router.replace('/admin/info')
-          } else {
-            ElMessage({
-              message: '登录失败,' + resp.message,
-              type: 'error'
-            })
           }
         }).finally(() => {
           loading.close()

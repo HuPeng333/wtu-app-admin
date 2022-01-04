@@ -34,6 +34,16 @@ const routes: Array<RouteRecordRaw> = [
         component: AppUpdate
       }
     ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: AdminPage,
+    children: [
+      {
+        path: '',
+        component: AppInfo
+      }
+    ]
   }
 ]
 

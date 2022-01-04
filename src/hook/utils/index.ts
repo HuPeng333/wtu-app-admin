@@ -24,8 +24,7 @@ export const getServerUrl = ():string => {
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:8081'
   } else {
-    // TODO 添加生产环境的服务器url
-    return ''
+    return 'http://localhost:8081'
   }
 }
 
