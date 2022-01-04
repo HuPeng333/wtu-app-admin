@@ -4,7 +4,7 @@
       <span>{{title}}</span>
     </div>
     <div>
-      <el-upload drag multiple :action="uploadUrl" :on-success="uploadSuccessCallback" :on-error="uploadFailCallback"
+      <el-upload drag multiple :action="uploadUrl" :on-success="uploadSuccessCallback" :on-error="uploadFailCallback" :on-progress="uploadProcessEvent"
                  :data="{versionName: fileName}" :name="uploadFileParameterName" :accept="fileExtension" :before-upload="beforeUploadCallback" :show-file-list="false">
         <div class="upload-area">
           <div class="iconfont upload-icon">
@@ -36,6 +36,7 @@ import { showErrorToast, showSuccessToast } from '@/hook/utils'
 import { ILoadingInstance } from 'element-plus/lib/el-loading/src/loading.type'
 import { useRouter } from 'vue-router'
 import { ElLoading } from 'element-plus'
+import { ResBean } from '@/api/beans/ResBean'
 
 export default defineComponent({
   name: 'FileUploadArea',
@@ -59,9 +60,14 @@ export default defineComponent({
 
     let loading:ILoadingInstance
 
-    const uploadSuccessCallback = (response:unknown) => {
-      console.log(response)
-      showSuccessToast('文件上传成功')
+    const uploadSuccessCallback = (response:ResBean) => {
+      if (response.code === 101) {
+        // 未登录
+        showErrorToast('请先登录')
+        router.replace('/login')
+      } else {
+        showSuccessToast('文件上传成功')
+      }
       loading?.close()
     }
 
@@ -122,6 +128,9 @@ export default defineComponent({
       isUpload.value = true
     }
 
+    const uploadProcessEvent = (e: {percent:number}) => {
+      loading.setText(Math.ceil(e.percent) + '%')
+    }
 
 
     return {
@@ -130,7 +139,8 @@ export default defineComponent({
       beforeUploadCallback,
       showDialog,
       fileName,
-      confirmUpload
+      confirmUpload,
+      uploadProcessEvent
     }
   }
 })
