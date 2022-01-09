@@ -8,7 +8,7 @@
       <el-skeleton :rows="10" animated :throttle="500" :loading="loadingDoneCount >= 0 && loadingDoneCount < 4"/>
       <div v-if="loadingDoneCount === 4">
         <file-table :file-list="wgtResourceList" prefix-url="/app/hotUpdate/" title="热更新资源包" :delete-callback="deleteWgtResource"
-                    :new-version-info="wgtNewVersionInfo" :update-call-back="publishWgtNewVersion"/>
+                    :new-version-info="wgtNewVersionInfo" :update-call-back="publishWgtNewVersion" require-min-version-code/>
         <file-table :file-list="androidApkList" prefix-url="/app/full/android/" title="安卓安装包" :delete-callback="deleteAndroidApk"
                     :new-version-info="androidNewVersionInfo" :update-call-back="publishAndroidNewVersion"/>
       </div>

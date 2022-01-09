@@ -11,6 +11,9 @@
         <div>
           <span>最新版本号: {{copyOfVersionInfo?.versionCode}}</span>
         </div>
+        <div v-if="requireMinVersionCode">
+          <span>最小安装版本号: {{copyOfVersionInfo.minVersionCode ? copyOfVersionInfo.minVersionCode : '未设置'}}</span>
+        </div>
         <div>
           <el-link type="primary" @click.prevent="showModifyVersionDialog = true">点我更新</el-link>
         </div>
@@ -50,11 +53,19 @@
 <!--        <span>新版本号: {{copyOfVersionInfo?.versionCode + 1}}</span>-->
 <!--        <span style="margin-left: 15px">新版本名称: {{selectedVersion}}</span>-->
 <!--      </div>-->
-      <div v-if="!!selectedVersion">
-        <div>
-          <span>输入版本号</span>
+      <div v-if="!!selectedVersion" class="dialog-form">
+        <div class="">
+          <div>
+            <span>输入版本号</span>
+          </div>
+          <el-input placeholder="输入版本号" v-model="formVersionCode" type="number"/>
         </div>
-        <el-input placeholder="输入版本号" v-model="formVersionCode" type="number"/>
+        <div>
+          <div>
+            <span>输入最小需求版本号</span>
+          </div>
+          <el-input placeholder="输入版本号" v-model="minVersionCodeRequire" type="number"/>
+        </div>
       </div>
     </div>
     <template #footer>
@@ -96,7 +107,8 @@ export default defineComponent({
     deleteCallback: {
       type: Function,
       required: true
-    }
+    },
+    requireMinVersionCode: Boolean
   },
   setup (props) {
     // 复制一份, 方便在发送ajax请求后修改显示的数据
@@ -104,15 +116,17 @@ export default defineComponent({
     const copyOfFileList = ref<Array<FileInfo>>(props.fileList as Array<FileInfo>)
     // ref组件
     const infoTable = ref()
+    const minVersionCodeRequire = ref(copyOfVersionInfo.value.minVersionCode ? copyOfVersionInfo.value.minVersionCode : 1)
 
     const timeStampFormatter = (row:FileInfo):string => {
       return parseTimestamp(row.createTime)
     }
 
+
     const showModifyVersionDialog = ref(false)
     const selectedVersion = ref<string>()
     // 如果有IOS, 应该将IOS拼接上
-    const formVersionCode = ref<number>(props.newVersionInfo ? props.newVersionInfo.versionCode + 1 : 1)
+    const formVersionCode = ref<number>(copyOfVersionInfo.value.minVersionCode ? copyOfVersionInfo.value.minVersionCode : 1)
 
     /**
      * 添加新版本
@@ -126,7 +140,7 @@ export default defineComponent({
       const loading = ElLoading.service()
 
       // 请求后的cb
-      props.updateCallBack(selectedVersion.value, formVersionCode.value).then((resp: ResBean) => {
+      props.updateCallBack(selectedVersion.value, formVersionCode.value, props.requireMinVersionCode ? minVersionCodeRequire.value : undefined).then((resp: ResBean) => {
         if (resp.code === 0) {
           showSuccessToast('操作成功')
           copyOfVersionInfo.value = {
@@ -137,6 +151,9 @@ export default defineComponent({
 
         }
       }).finally(() => {
+        if (props.requireMinVersionCode) {
+          copyOfVersionInfo.value.minVersionCode = minVersionCodeRequire.value
+        }
         // 刷新
         const copy = copyOfFileList.value
         copyOfFileList.value = []
@@ -208,7 +225,8 @@ export default defineComponent({
       infoTable,
       deleteFile,
       copyOfFileList,
-      sizeFormatter
+      sizeFormatter,
+      minVersionCodeRequire
     }
   }
 })
@@ -223,5 +241,10 @@ export default defineComponent({
 }
 .app-info-current-version{
   background-color: var(--el-color-success-lighter) !important;
+}
+.dialog-form{
+  > div{
+    margin: 10px 0;
+  }
 }
 </style>

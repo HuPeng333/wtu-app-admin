@@ -53,8 +53,10 @@ export const getAndroidNewVersionInfo = ():Promise<ResBean<AppInfo>> => noRepeat
  * 发布热更新新版本
  * @param versionName {string} 版本名称
  * @param versionCode {number} 版本号
+ * @param minVersionCode {number} app升级所需最小版本号
  */
-export const publishWgtNewVersion = (versionName:string, versionCode: number | string = ''):Promise<ResBean> => noRepeatAjax('/update/wgt/update', { versionName, versionCode },'POST')
+export const publishWgtNewVersion = (versionName:string, versionCode: number | string = '', minVersionCode: number):Promise<ResBean> =>
+  noRepeatAjax('/update/wgt/update', { versionName, versionCode, minVersionCode },'POST')
 
 /**
  * 发布安卓新版本
