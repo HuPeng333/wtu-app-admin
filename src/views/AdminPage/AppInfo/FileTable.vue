@@ -134,10 +134,15 @@ export default defineComponent({
             versionName: selectedVersion.value!,
             versionCode: formVersionCode.value
           }
-          infoTable.value.doLayout()
 
         }
       }).finally(() => {
+        // 刷新
+        const copy = copyOfFileList.value
+        copyOfFileList.value = []
+        setTimeout(() => {
+          copyOfFileList.value = copy
+        }, 200)
         loading.close()
       })
 
@@ -146,7 +151,7 @@ export default defineComponent({
     }
 
     const showCurrentVersionInTable = ({ row }: {row: FileInfo}) => {
-      if (row.fileName === props.newVersionInfo?.versionName) {
+      if (row.fileName === copyOfVersionInfo.value.versionName) {
         return 'app-info-current-version'
       } else {
         return ''
